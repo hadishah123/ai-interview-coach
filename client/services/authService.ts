@@ -1,8 +1,12 @@
 import api from "@/lib/axios";
-import { UseFormRegisterReturn } from "react-hook-form";
+
+import {
+  SignupFormData,
+  LoginFormData,
+} from "@/types/auth";
 
 export const signupUser = async (
-  data: UseFormRegisterReturn
+  data: SignupFormData
 ) => {
   const response = await api.post(
     "/auth/signup",
@@ -13,7 +17,7 @@ export const signupUser = async (
 };
 
 export const loginUser = async (
-  data: UseFormRegisterReturn
+  data: LoginFormData
 ) => {
   const response = await api.post(
     "/auth/login",

@@ -4,7 +4,7 @@ type AuthInputProps = {
   label: string;
   type: string;
   placeholder: string;
-  register: UseFormRegisterReturn; 
+  register: UseFormRegisterReturn;
   error?: string;
 };
 
@@ -17,7 +17,7 @@ const AuthInput = ({
 }: AuthInputProps) => {
   return (
     <div className="space-y-2">
-      <label className="text-sm text-gray-300">
+      <label className="text-sm font-medium">
         {label}
       </label>
 
@@ -25,11 +25,11 @@ const AuthInput = ({
         type={type}
         placeholder={placeholder}
         {...register}
-        className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-4 py-3 outline-none transition focus:border-white/30"
+        className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-black"
       />
 
       {error && (
-        <p className="text-sm text-red-400">
+        <p className="text-sm text-red-500">
           {error}
         </p>
       )}

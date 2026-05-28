@@ -1,6 +1,8 @@
 "use client";
 
 import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,11 +14,15 @@ import {
   LoginFormData,
 } from "@/types/auth";
 
+import { loginUser } from "@/services/authService";
+
 const LoginForm = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
@@ -24,9 +30,28 @@ const LoginForm = () => {
   const onSubmit = async (
     data: LoginFormData
   ) => {
-    console.log(data);
+    try {
+      const response =
+        await loginUser(data);
 
-    toast.success("Login successful");
+      localStorage.setItem(
+        "token",
+        response.token
+      );
+
+      toast.success("Login successful");
+
+      router.push("/dashboard");
+    } catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    toast.error(
+      error.response?.data?.message ||
+      "Invalid credentials"
+    );
+  } else {
+    toast.error("Something went wrong");
+  }
+}
   };
 
   return (
@@ -52,9 +77,12 @@ const LoginForm = () => {
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90"
+        disabled={isSubmitting}
+        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
       >
-        Login
+        {isSubmitting
+          ? "Logging In..."
+          : "Login"}
       </button>
     </form>
   );

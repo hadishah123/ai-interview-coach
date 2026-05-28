@@ -1,5 +1,9 @@
 "use client";
 
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,17 +14,48 @@ import {
   SignupFormData,
 } from "@/types/auth";
 
+import { signupUser } from "@/services/authService";
+
 const SignupForm = () => {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = (data: SignupFormData) => {
-    console.log(data);
+  const onSubmit = async (
+    data: SignupFormData
+  ) => {
+    try {
+      const response =
+        await signupUser(data);
+
+      console.log(response);
+
+      toast.success(
+        "Account created successfully"
+      );
+
+      localStorage.setItem(
+        "token",
+        response.token
+      );
+
+      router.push("/dashboard");
+    } catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    toast.error(
+      error.response?.data?.message ||
+      "Invalid credentials"
+    );
+  } else {
+    toast.error("Something went wrong");
+  }
+}
   };
 
   return (
@@ -54,9 +89,12 @@ const SignupForm = () => {
 
       <button
         type="submit"
-        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90"
+        disabled={isSubmitting}
+        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
       >
-        Create Account
+        {isSubmitting
+          ? "Creating Account..."
+          : "Create Account"}
       </button>
     </form>
   );
