@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuth } from "@/store/AuthContext";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
 import { loginUser } from "@/services/authService";
 
 const LoginForm = () => {
+  const { login } = useAuth();
   const router = useRouter();
 
   const {
@@ -34,10 +35,7 @@ const LoginForm = () => {
       const response =
         await loginUser(data);
 
-      localStorage.setItem(
-        "token",
-        response.token
-      );
+      login(response.token);
 
       toast.success("Login successful");
 

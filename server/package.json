@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "axios": "^1.16.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -20,6 +21,8 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.2",
     "multer": "^2.1.1",
+    "pdf-parse-fixed": "^1.1.1",
+    "pdfjs-dist": "^5.7.284",
     "prisma": "^5.22.0"
   },
   "devDependencies": {

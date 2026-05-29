@@ -1,5 +1,5 @@
 "use client";
-
+import { useAuth } from "@/store/AuthContext";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -9,16 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import AuthInput from "./AuthInput";
 
-import {
-  signupSchema,
-  SignupFormData,
-} from "@/types/auth";
+import { signupSchema, SignupFormData } from "@/types/auth";
 
 import { signupUser } from "@/services/authService";
 
 const SignupForm = () => {
   const router = useRouter();
-
+  const { login } = useAuth();
   const {
     register,
     handleSubmit,
@@ -27,42 +24,28 @@ const SignupForm = () => {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = async (
-    data: SignupFormData
-  ) => {
+  const onSubmit = async (data: SignupFormData) => {
     try {
-      const response =
-        await signupUser(data);
+      const response = await signupUser(data);
 
       console.log(response);
 
-      toast.success(
-        "Account created successfully"
-      );
+      toast.success("Account created successfully");
 
-      localStorage.setItem(
-        "token",
-        response.token
-      );
+      login(response.token);
 
       router.push("/dashboard");
     } catch (error: unknown) {
-  if (axios.isAxiosError(error)) {
-    toast.error(
-      error.response?.data?.message ||
-      "Invalid credentials"
-    );
-  } else {
-    toast.error("Something went wrong");
-  }
-}
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Invalid credentials");
+      } else {
+        toast.error("Something went wrong");
+      }
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <AuthInput
         label="Full Name"
         type="text"
@@ -92,9 +75,7 @@ const SignupForm = () => {
         disabled={isSubmitting}
         className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
       >
-        {isSubmitting
-          ? "Creating Account..."
-          : "Create Account"}
+        {isSubmitting ? "Creating Account..." : "Create Account"}
       </button>
     </form>
   );

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+
 import { Toaster } from "react-hot-toast";
+
+import { AuthProvider } from "@/store/AuthContext";
 
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AI Interview Coach",
-  description: "AI-powered interview preparation platform",
+  description:
+    "AI-powered interview preparation platform",
 };
 
 export default function RootLayout({
@@ -16,12 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <AuthProvider>
+          {children}
 
-        <Toaster
-          position="top-right"
-          reverseOrder={false}
-        />
+          <Toaster
+            position="top-right"
+            reverseOrder={false}
+          />
+        </AuthProvider>
       </body>
     </html>
   );

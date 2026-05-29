@@ -9,5 +9,11 @@
 
     router.post("/signup", signup);
     router.post("/login", login);
+    // router.post("/logout", (req, res) => {
+    // res.clearCookie("token").json({
+    // message: "Logged out successfully",
+    // });
+    // });
+
 
     export default router;
