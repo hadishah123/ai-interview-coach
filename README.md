@@ -1,51 +1,72 @@
 # AI Interview Coach
 
-An AI-powered platform that helps users improve resumes and practice personalized mock interviews using advanced AI.
+An AI-powered interview preparation platform that helps users improve resumes, practice interviews, receive feedback, and track career growth.
 
 ---
 
 ## Features
 
-- AI Resume Analysis
-- ATS Resume Scoring
-- Personalized Interview Questions
-- Real-Time Mock Interviews
-- Interview Feedback & Scoring
-- Resume History Tracking
-- Authentication System
-- Voice Interview Simulation (Planned)
+### Resume Analyzer
+
+- Upload PDF resumes
+- Extract resume text automatically
+- AI-powered resume evaluation
+- Resume score generation
+- Strengths detection
+- Weakness identification
+- Missing skills suggestions
+- Career role recommendations
+
+### Authentication
+
+- JWT Authentication
+- User Registration
+- User Login
+- Protected Routes
+
+### AI Service
+
+- FastAPI AI Microservice
+- Groq LLM Integration
+- Resume Analysis Engine
 
 ---
 
 ## Tech Stack
 
 ### Frontend
-- Next.js
+
+- Next.js 16
+- TypeScript
 - Tailwind CSS
-- Framer Motion
-- shadcn/ui
+- Axios
+- Context API
 
 ### Backend
+
 - Node.js
 - Express.js
+- Prisma ORM
+- PostgreSQL
+- JWT
 
 ### AI Service
-- FastAPI
-- OpenAI API
 
-### Database
-- PostgreSQL
+- FastAPI
+- Python
+- Groq API
 
 ---
 
 ## Project Structure
 
-```txt
+```text
 ai-interview-coach/
 │
-├── client/       # Frontend (Next.js)
-├── server/       # Backend API (Express)
-├── ai-service/   # AI Microservice (FastAPI)
+├── client/
+├── server/
+├── ai-service/
+└── README.md
 ```
 
 ---
@@ -56,31 +77,37 @@ ai-interview-coach/
 
 ```bash
 git clone https://github.com/hadishah123/ai-interview-coach.git
+
+cd ai-interview-coach
 ```
 
 ---
 
-### Frontend Setup
+### Frontend
 
 ```bash
 cd client
+
 npm install
+
 npm run dev
 ```
 
 ---
 
-### Backend Setup
+### Backend
 
 ```bash
 cd server
+
 npm install
+
 npm run dev
 ```
 
 ---
 
-### AI Service Setup
+### AI Service
 
 ```bash
 cd ai-service
@@ -91,44 +118,59 @@ python -m venv venv
 venv\Scripts\activate
 
 pip install -r requirements.txt
+
+uvicorn main:app --reload --port 8000
 ```
 
 ---
 
 ## Environment Variables
 
-Create `.env` files inside:
-
-- `server/`
-- `ai-service/`
-
-Example:
+### Server
 
 ```env
-PORT=5000
-JWT_SECRET=your_secret
-DATABASE_URL=your_database_url
-OPENAI_API_KEY=your_api_key
+PORT=
+
+DATABASE_URL=
+
+JWT_SECRET=
+```
+
+### AI Service
+
+```env
+GROQ_API_KEY=
 ```
 
 ---
 
-## Current Status
+## Current Progress
 
-🚧 Under Development
+### ✅ Completed
 
----
+- Authentication System
+- PostgreSQL Setup
+- Prisma Models
+- Resume Upload API
+- PDF Parsing
+- AI Resume Analysis
+- Resume Analysis UI
 
-## Future Improvements
+### 🚀 Upcoming
 
-- Voice AI Interviews
-- AI Career Roadmaps
-- Webcam Emotion Analysis
-- Company-Specific Interview Prep
-- Real-Time AI Coaching
+- Interview Session Generator
+- AI Interview Questions
+- Voice Interviews
+- AI Feedback System
+- Interview History
+- Dashboard Analytics
+- Admin Panel
 
 ---
 
 ## Author
 
-Built by Hadi Shah
+**Abdul Hadi**  
+MERN Stack Developer
+
+GitHub: https://github.com/hadishah123

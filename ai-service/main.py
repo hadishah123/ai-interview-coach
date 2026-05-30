@@ -1,18 +1,16 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-
 from dotenv import load_dotenv
-
 from groq import Groq
 
 import os
+import json
+import traceback
 
 load_dotenv()
 
 client = Groq(
-    api_key=os.getenv(
-        "GROQ_API_KEY"
-    )
+    api_key=os.getenv("GROQ_API_KEY")
 )
 
 app = FastAPI()
@@ -25,71 +23,78 @@ class ResumeRequest(BaseModel):
 @app.get("/")
 def root():
     return {
-        "message":
-        "AI Service Running"
+        "message": "AI Service Running"
     }
 
 
 @app.post("/analyze-resume")
-async def analyze_resume(
-    data: ResumeRequest
-):
+async def analyze_resume(data: ResumeRequest):
     try:
         prompt = f"""
-You are an expert AI resume reviewer.
+            You are an expert ATS Resume Reviewer.
 
-Analyze this resume and provide:
+            Analyze the resume and return ONLY valid JSON.
 
-1. Resume score out of 100
-2. Strengths
-3. Weaknesses
-4. Missing skills
-5. Suggested improvements
-6. Best suited job roles
+            Rules:
+            - Score must be an INTEGER from 0 to 100.
+            - 0 = very poor resume.
+            - 100 = exceptional resume.
+            - Use only information present in the resume.
+            - Do NOT invent skills or weaknesses.
+            - Do NOT list a skill as missing if it already exists in the resume.
+            - Provide realistic job role recommendations.
 
-Resume:
-{data.resume_text}
-"""
+            Return JSON in exactly this format:
 
-        response = (
-            client.chat.completions.create(
-                model=
-                "llama-3.1-8b-instant",
+            {{
+                "score": 0,
+                "strengths": [],
+                "weaknesses": [],
+                "missing_skills": [],
+                "improvements": [],
+                "job_roles": []
+            }}
 
-                messages=[
-                    {
-                        "role":
-                        "user",
+            Resume:
 
-                        "content":
-                        prompt
-                    }
-                ]
-            )
+            {data.resume_text}
+            """
+
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
         )
 
+        analysis = response.choices[0].message.content
+
+        # Remove markdown if model wraps JSON
         analysis = (
-            response
-            .choices[0]
-            .message
-            .content
+            analysis.replace("```json", "")
+            .replace("```", "")
+            .strip()
         )
+
+        analysis_json = json.loads(analysis)
 
         return {
-            "analysis":
-            analysis
+            "analysis": analysis_json
+        }
+
+    except json.JSONDecodeError:
+        return {
+            "error": "Model returned invalid JSON",
+            "raw_response": analysis if 'analysis' in locals() else None
         }
 
     except Exception as e:
-        import traceback
-
-        print(
-            "GROQ ERROR:"
-        )
-
+        print("GROQ ERROR:")
         traceback.print_exc()
 
         return {
-            "error":
-            str(e)
+            "error": str(e)
         }
