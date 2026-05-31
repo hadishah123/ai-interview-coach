@@ -4,31 +4,33 @@ An AI-powered interview preparation platform that helps users improve resumes, p
 
 ---
 
-## Features
-
-### Resume Analyzer
-
-- Upload PDF resumes
-- Extract resume text automatically
-- AI-powered resume evaluation
-- Resume score generation
-- Strengths detection
-- Weakness identification
-- Missing skills suggestions
-- Career role recommendations
+## 🚀 Features
 
 ### Authentication
-
+- User Signup/Login
 - JWT Authentication
-- User Registration
-- User Login
-- Protected Routes
+- Protected API Routes
 
-### AI Service
+### Resume Analyzer
+- Upload PDF Resume
+- Extract Resume Text
+- AI-Powered Resume Analysis
+- Resume Score
+- Strengths & Weaknesses Detection
+- Missing Skills Suggestions
+- Recommended Job Roles
 
-- FastAPI AI Microservice
-- Groq LLM Integration
-- Resume Analysis Engine
+### AI Interview Generator
+- Generate Questions From Resume
+- Technical Questions
+- Behavioral Questions
+- Project-Based Questions
+- Role-Specific Interview Sessions
+
+### Database
+- PostgreSQL
+- Prisma ORM
+- Interview Session Persistence
 
 ---
 
@@ -144,17 +146,32 @@ GROQ_API_KEY=
 
 ---
 
-## Current Progress
+## Features Implemented
 
-### ✅ Completed
+### Authentication
+- JWT Authentication
+- Signup & Login
+- Protected Routes
 
-- Authentication System
-- PostgreSQL Setup
-- Prisma Models
-- Resume Upload API
-- PDF Parsing
-- AI Resume Analysis
-- Resume Analysis UI
+### AI Resume Analyzer
+- PDF Upload
+- Resume Parsing
+- AI Analysis
+- Resume Score
+- Strengths & Weaknesses Detection
+- Missing Skills Detection
+- Job Role Recommendations
+
+### AI Interview Generator
+- Generates Technical Questions
+- Generates Project-Based Questions
+- Generates Behavioral Questions
+- Stores Interview Sessions in PostgreSQL
+- Dynamic Interview Session Routing
+
+### Database
+- PostgreSQL (Supabase)
+- Prisma ORM
 
 ### 🚀 Upcoming
 

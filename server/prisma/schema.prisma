@@ -13,4 +13,29 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  interviews Interview[]
+}
+
+model InterviewResult {
+  id          String   @id @default(cuid())
+  interviewId String
+  score       Int
+  feedback    Json
+  createdAt   DateTime @default(now())
+
+  interview Interview @relation(fields: [interviewId], references: [id])
+}
+
+model Interview {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String
+  level     String
+  questions Json
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  results InterviewResult[]
 }

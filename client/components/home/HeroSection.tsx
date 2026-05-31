@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -37,9 +38,12 @@ const HeroSection = () => {
         transition={{ delay: 0.4 }}
         className="mt-10 flex gap-4"
       >
-        <button className="rounded-2xl bg-white px-7 py-4 font-semibold text-black transition hover:scale-105">
-          Start Free
-        </button>
+        <Link
+  href="/resume"
+  className="rounded-2xl bg-white px-7 py-4 font-semibold text-black transition hover:scale-105"
+>
+  Start Free
+</Link>
 
         <button className="rounded-2xl border border-white/10 px-7 py-4 transition hover:bg-white/5">
           Watch Demo

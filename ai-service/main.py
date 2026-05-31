@@ -16,49 +16,144 @@ client = Groq(
 app = FastAPI()
 
 
+# ==========================
+# Request Models
+# ==========================
+
 class ResumeRequest(BaseModel):
     resume_text: str
 
 
+class InterviewRequest(BaseModel):
+    resume_text: str
+    role: str
+    level: str
+
+
+# ==========================
+# Root Route
+# ==========================
+
 @app.get("/")
 def root():
     return {
-        "message": "AI Service Running"
+        "message": "AI Interview Coach API is running"
     }
 
+
+# ==========================
+# Generate Interview
+# ==========================
+
+@app.post("/generate-interview")
+async def generate_interview(data: InterviewRequest):
+    try:
+        prompt = f"""
+You are a senior technical interviewer.
+
+Candidate Resume:
+{data.resume_text}
+
+Target Role:
+{data.role}
+
+Experience Level:
+{data.level}
+
+Generate:
+
+10 technical questions
+3 project-based questions
+2 behavioral questions
+
+Return ONLY valid JSON.
+
+Format:
+
+{{
+  "technical": [],
+  "projects": [],
+  "behavioral": []
+}}
+"""
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            temperature=0.7
+        )
+
+        result = (
+            response
+            .choices[0]
+            .message
+            .content
+        )
+
+        # Safety cleanup in case model returns markdown
+        result = (
+            result.replace("```json", "")
+            .replace("```", "")
+            .strip()
+        )
+
+        questions = json.loads(result)
+
+        return questions
+
+    except json.JSONDecodeError:
+        return {
+            "error": "Model returned invalid JSON",
+            "raw_response": result if "result" in locals() else None
+        }
+
+    except Exception as e:
+        print("INTERVIEW GENERATION ERROR:")
+        traceback.print_exc()
+
+        return {
+            "error": str(e)
+        }
+
+# ==========================
+# Resume Analysis
+# ==========================
 
 @app.post("/analyze-resume")
 async def analyze_resume(data: ResumeRequest):
     try:
         prompt = f"""
-            You are an expert ATS Resume Reviewer.
+        You are an expert ATS Resume Reviewer.
 
-            Analyze the resume and return ONLY valid JSON.
+        Analyze the resume and return ONLY valid JSON.
 
-            Rules:
-            - Score must be an INTEGER from 0 to 100.
-            - 0 = very poor resume.
-            - 100 = exceptional resume.
-            - Use only information present in the resume.
-            - Do NOT invent skills or weaknesses.
-            - Do NOT list a skill as missing if it already exists in the resume.
-            - Provide realistic job role recommendations.
+        Rules:
+        - Score must be an INTEGER from 0 to 100.
+        - Use only information present in the resume.
+        - Do NOT invent skills or weaknesses.
+        - Do NOT list a skill as missing if it already exists.
+        - Provide realistic job role recommendations.
 
-            Return JSON in exactly this format:
+        Return JSON in exactly this format:
 
-            {{
-                "score": 0,
-                "strengths": [],
-                "weaknesses": [],
-                "missing_skills": [],
-                "improvements": [],
-                "job_roles": []
-            }}
+        {{
+            "score": 0,
+            "strengths": [],
+            "weaknesses": [],
+            "missing_skills": [],
+            "improvements": [],
+            "job_roles": []
+        }}
 
-            Resume:
+        Resume:
 
-            {data.resume_text}
-            """
+        {data.resume_text}
+        """
 
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
@@ -72,7 +167,6 @@ async def analyze_resume(data: ResumeRequest):
 
         analysis = response.choices[0].message.content
 
-        # Remove markdown if model wraps JSON
         analysis = (
             analysis.replace("```json", "")
             .replace("```", "")
@@ -88,7 +182,7 @@ async def analyze_resume(data: ResumeRequest):
     except json.JSONDecodeError:
         return {
             "error": "Model returned invalid JSON",
-            "raw_response": analysis if 'analysis' in locals() else None
+            "raw_response": analysis if "analysis" in locals() else None
         }
 
     except Exception as e:
