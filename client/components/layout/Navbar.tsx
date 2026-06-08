@@ -1,27 +1,33 @@
+"use client";
+
 import Link from "next/link";
 
-const Navbar = () => {
+export default function Navbar() {
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#0f0f0f]/80 backdrop-blur-md shadow-lg shadow-black/5">
+    <nav className="border-b">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-2xl font-bold tracking-tight">
+        
+        <Link
+          href="/dashboard"
+          className="text-xl font-bold"
+        >
           AI Interview Coach
         </Link>
 
-        <div className="flex items-center gap-5">
-          <button className="rounded-xl border border-white/10 px-5 py-2 transition hover:bg-white/5 hover:scale-105">
-            Login
-          </button>
+        <div className="flex gap-6">
+          <Link href="/dashboard">
+            Dashboard
+          </Link>
 
-          <button className="group relative overflow-hidden rounded-2xl bg-white px-6 py-3 text-sm font-semibold text-black transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-white/20">
-            <div className="absolute inset-0 bg-linear-to-r from-gray-200 to-white opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <Link href="/resume">
+            Resume
+          </Link>
 
-            <span className="relative z-10">Get Started</span>
-          </button>
+          <Link href="/interview">
+            Interview
+          </Link>
         </div>
       </div>
     </nav>
   );
-};
-
-export default Navbar;
+}

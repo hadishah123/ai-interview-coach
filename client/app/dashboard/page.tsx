@@ -1,40 +1,51 @@
-"use client";
+import Link from "next/link";
 
-import useProtectedRoute from "@/hooks/useProtectedRoute";
-import { useRouter } from "next/navigation";
-
-import { useAuth } from "@/store/AuthContext";
 export default function DashboardPage() {
-  const router = useRouter();
-
-  const { logout } = useAuth();
-  const { loading } = useProtectedRoute();
-
-  if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#0f0f0f] text-white">
-        Loading...
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-[#0f0f0f] p-10 text-white">
-      <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-bold">Dashboard</h1>
-        <button
-          onClick={() => {
-            logout();
+    <div className="max-w-6xl mx-auto p-10">
+      <h1 className="text-4xl font-bold mb-4">
+        Dashboard
+      </h1>
 
-            router.push("/login");
-          }}
-          className="rounded-xl bg-red-500 px-5 py-2"
-        >
-          Logout
-        </button>
+      <p className="text-gray-400 mb-10">
+        Welcome back 👋
+      </p>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-xl border p-6">
+          <h2 className="text-xl font-semibold mb-3">
+            Resume Analyzer
+          </h2>
+
+          <p className="mb-4">
+            Upload and analyze your resume.
+          </p>
+
+          <Link
+            href="/resume"
+            className="rounded-lg bg-white px-4 py-2 text-black"
+          >
+            Analyze Resume
+          </Link>
+        </div>
+
+        <div className="rounded-xl border p-6">
+          <h2 className="text-xl font-semibold mb-3">
+            AI Interview
+          </h2>
+
+          <p className="mb-4">
+            Generate a personalized interview.
+          </p>
+
+          <Link
+            href="/interview"
+            className="rounded-lg bg-white px-4 py-2 text-black"
+          >
+            Start Interview
+          </Link>
+        </div>
       </div>
-
-      <p className="mt-4 text-gray-400">Authentication successful.</p>
-    </main>
+    </div>
   );
 }
