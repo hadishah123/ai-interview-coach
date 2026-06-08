@@ -4,6 +4,10 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import interviewRoutes from "./routes/interviewRoutes.js";
+import interviewAnswerRoutes
+from "./routes/interviewAnswerRoutes.js";
+import interviewResultRoutes
+from "./routes/interviewResultRoutes.js";
 
 const app = express();
 
@@ -32,6 +36,16 @@ app.use(
 app.use(
   "/api/interview",
   interviewRoutes
+);
+
+app.use(
+  "/api/interview-answer",
+  interviewAnswerRoutes
+);
+
+app.use(
+  "/api/interview-result",
+  interviewResultRoutes
 );
 
 export default app;

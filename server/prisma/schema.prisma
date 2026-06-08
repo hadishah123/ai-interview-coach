@@ -37,5 +37,16 @@ model Interview {
 
   user User @relation(fields: [userId], references: [id])
 
+  answers InterviewAnswer[]
   results InterviewResult[]
+}
+
+model InterviewAnswer {
+  id          String   @id @default(cuid())
+  interviewId String
+  question    String
+  answer      String
+  createdAt   DateTime @default(now())
+
+  interview   Interview @relation(fields: [interviewId], references: [id])
 }
