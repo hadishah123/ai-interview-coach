@@ -57,27 +57,74 @@ export default function ResumePage() {
   };
 
   return (
-    <main className="max-w-6xl mx-auto p-8">
-      <h1 className="text-4xl font-bold mb-8">AI Resume Analyzer</h1>
+  <main className="min-h-screen bg-slate-50">
+    <div className="mx-auto max-w-6xl px-6 py-10">
+      <div className="mb-8">
+        <div className="mb-3 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-600">
+          📄 AI Resume Analyzer
+        </div>
 
-      <ResumeUpload onUpload={handleUpload} loading={loading} />
+        <h1 className="text-4xl font-bold text-slate-900">
+          Resume Analysis
+        </h1>
+
+        <p className="mt-2 text-slate-500">
+          Upload your resume and receive AI-powered feedback on skills,
+          formatting, ATS readiness, and improvement opportunities.
+        </p>
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <ResumeUpload
+          onUpload={handleUpload}
+          loading={loading}
+        />
+      </div>
 
       {analysis && (
         <div className="mt-8 space-y-8">
           <ResumeScoreCard score={analysis.score} />
 
-          <>
-            <ResumeAnalysis data={analysis} />
-            <button
-              onClick={handleGenerateInterview}
-              disabled={generating || loading}
-              className="px-6 py-3 rounded-lg bg-yellow-500 text-black font-semibold hover:bg-yellow-600 disabled:bg-gray-400  transition  disabled:transition-none  disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-400        "
-            >
-              {generating ? "Generating..." : "Generate Interview"}
-            </button>{" "}
-          </>
+          <ResumeAnalysis data={analysis} />
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Ready for an Interview?
+                </h2>
+
+                <p className="mt-2 text-slate-500">
+                  Generate a personalized interview based on your resume
+                  and start practicing immediately.
+                </p>
+              </div>
+
+              <button
+                onClick={handleGenerateInterview}
+                disabled={generating || loading}
+                className="
+                rounded-2xl
+                bg-indigo-600
+                px-6
+                py-3
+                font-medium
+                text-white
+                transition
+                hover:bg-indigo-700
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+                "
+              >
+                {generating
+                  ? "Generating Interview..."
+                  : "Generate Interview"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </main>
-  );
+    </div>
+  </main>
+);
 }

@@ -76,11 +76,20 @@ const LoginForm = () => {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
+        className="
+        w-full
+        rounded-xl
+        bg-indigo-600
+        py-3
+        font-semibold
+        text-white
+        transition
+        hover:bg-indigo-700
+        disabled:cursor-not-allowed
+        disabled:opacity-50
+        "
       >
-        {isSubmitting
-          ? "Logging In..."
-          : "Login"}
+        {isSubmitting ? "Logging In..." : "Sign In"}
       </button>
     </form>
   );

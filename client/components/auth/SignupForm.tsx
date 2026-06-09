@@ -45,40 +45,61 @@ const SignupForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <AuthInput
-        label="Full Name"
-        type="text"
-        placeholder="John Doe"
-        register={register("name")}
-        error={errors.name?.message}
-      />
+  <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <AuthInput
+      label="Full Name"
+      type="text"
+      placeholder="John Doe"
+      register={register("name")}
+      error={errors.name?.message}
+    />
 
-      <AuthInput
-        label="Email"
-        type="email"
-        placeholder="john@example.com"
-        register={register("email")}
-        error={errors.email?.message}
-      />
+    <AuthInput
+      label="Email"
+      type="email"
+      placeholder="john@example.com"
+      register={register("email")}
+      error={errors.email?.message}
+    />
 
-      <AuthInput
-        label="Password"
-        type="password"
-        placeholder="******"
-        register={register("password")}
-        error={errors.password?.message}
-      />
+    <AuthInput
+      label="Password"
+      type="password"
+      placeholder="******"
+      register={register("password")}
+      error={errors.password?.message}
+    />
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full rounded-xl bg-white py-3 font-semibold text-black transition hover:opacity-90 disabled:opacity-50"
+    <button
+      type="submit"
+      disabled={isSubmitting}
+      className="
+      w-full
+      rounded-xl
+      bg-indigo-600
+      py-3
+      font-semibold
+      text-white
+      transition
+      hover:bg-indigo-700
+      disabled:cursor-not-allowed
+      disabled:opacity-50
+      "
+    >
+      {isSubmitting ? "Creating Account..." : "Create Account"}
+    </button>
+
+    <p className="mt-6 text-center text-sm text-slate-500">
+      Already have an account?{" "}
+      <a
+        href="/login"
+        className="font-medium text-indigo-600 hover:text-indigo-700"
       >
-        {isSubmitting ? "Creating Account..." : "Create Account"}
-      </button>
-    </form>
-  );
+        Sign in
+      </a>
+    </p>
+  </form>
+);
 };
 
 export default SignupForm;
