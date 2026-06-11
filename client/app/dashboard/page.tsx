@@ -1,21 +1,17 @@
 "use client";
 
 import useProtectedRoute from "@/hooks/useProtectedRoute";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuth } from "@/store/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-export default function DashboardPage() {
-  const router = useRouter();
 
-  const { logout } = useAuth();
+export default function DashboardPage() {
   const { loading } = useProtectedRoute();
 
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
         <div className="rounded-2xl border border-slate-200 bg-white px-8 py-6 shadow-sm">
-          <p className="text-slate-600">Loading dashboard...</p>
+          <p className="text-slate-600">Preparing your AI workspace...</p>
         </div>
       </main>
     );
@@ -26,50 +22,32 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
           {/* Header */}
-          <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 sm:text-4xl">
-                Dashboard
-              </h1>
-
-              <p className="mt-2 text-sm text-slate-500 sm:text-base">
-                Manage your resume reviews and interview sessions.
+              <p className="text-sm font-medium text-indigo-600">
+                AI Interview Coach
               </p>
 
-              <p className="mt-3 text-xs text-slate-400 sm:text-sm">
+              <h1 className="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
                 Welcome back 👋
+              </h1>
+
+              <p className="mt-3 text-base text-slate-600">
+                Continue improving your interview performance with AI-powered
+                feedback.
+              </p>
+
+              <p className="mt-2 text-xs text-slate-400 sm:text-sm">
+                Your personal career coach is ready.
               </p>
             </div>
 
-            {/* Logout Button */}
-            <button
-              onClick={() => {
-                logout();
-                router.push("/login");
-              }}
-              className="
-              inline-flex
-              w-full
-              md:w-auto
-              items-center
-              justify-center
-              gap-2
-              rounded-xl
-              border
-              border-slate-300
-              bg-white
-              px-5
-              py-2.5
-              text-sm
-              font-medium
-              text-slate-700
-              shadow-sm
-              transition
-              hover:bg-slate-100
-            "
-            >
-              🚪 Logout
-            </button>
+            {/* Optional soft status pill (no logic change) */}
+            <div className="hidden md:flex">
+              <div className="rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2 text-xs font-medium text-indigo-700">
+                ● AI Active Session
+              </div>
+            </div>
           </div>
 
           {/* Feature Cards */}
@@ -77,94 +55,66 @@ export default function DashboardPage() {
             {/* Resume Analyzer */}
             <div
               className="
-              rounded-3xl
-              border border-slate-200
-              bg-white
-              p-6 sm:p-8
-              shadow-sm
-              transition
-              hover:-translate-y-1
-              hover:shadow-md
+              group rounded-3xl border border-slate-200 bg-white p-6 sm:p-8
+              shadow-sm transition
+              hover:-translate-y-1 hover:shadow-lg
             "
             >
-              <div className="mb-4 text-3xl sm:text-4xl">📄</div>
+              <div className="mb-4 text-4xl">📄</div>
 
-              <h2 className="mb-3 text-lg font-semibold text-slate-900 sm:text-xl">
-                Resume Analyzer
+              <h2 className="mb-2 text-xl font-semibold text-slate-900">
+                Resume Intelligence
               </h2>
 
-              <p className="mb-6 text-sm text-slate-500 sm:text-base">
-                Upload your resume and receive AI-powered feedback on skills,
-                formatting, and improvements.
+              <p className="mb-6 text-sm text-slate-600">
+                Get AI feedback on your resume, including skills gap analysis,
+                structure improvements, and ATS optimization tips.
               </p>
 
               <Link
                 href="/resume"
                 className="
-                inline-flex
-                w-full
-                sm:w-auto
-                items-center
-                justify-center
-                rounded-xl
-                bg-indigo-600
-                px-6
-                py-3
-                text-sm
-                font-medium
-                text-white
+                inline-flex w-full sm:w-auto items-center justify-center
+                rounded-xl bg-indigo-600 px-6 py-3
+                text-sm font-medium text-white
                 transition
-                hover:bg-indigo-700
+                hover:bg-indigo-700 hover:shadow-md
               "
               >
-                Analyze Resume
+                Analyze My Resume →
               </Link>
             </div>
 
             {/* AI Interview */}
             <div
               className="
-              rounded-3xl
-              border border-slate-200
-              bg-white
-              p-6 sm:p-8
-              shadow-sm
-              transition
-              hover:-translate-y-1
-              hover:shadow-md
+              group rounded-3xl border border-slate-200 bg-white p-6 sm:p-8
+              shadow-sm transition
+              hover:-translate-y-1 hover:shadow-lg
             "
             >
-              <div className="mb-4 text-3xl sm:text-4xl">🎤</div>
+              <div className="mb-4 text-4xl">🎤</div>
 
-              <h2 className="mb-3 text-lg font-semibold text-slate-900 sm:text-xl">
-                AI Interview
+              <h2 className="mb-2 text-xl font-semibold text-slate-900">
+                Mock Interview Coach
               </h2>
 
-              <p className="mb-6 text-sm text-slate-500 sm:text-base">
-                Generate personalized interview questions and receive detailed
-                AI evaluation.
+              <p className="mb-6 text-sm text-slate-600">
+                Practice AI-generated interview questions and receive real-time
+                feedback to improve clarity, confidence, and structure.
               </p>
 
               <Link
                 href="/interview"
                 className="
-                inline-flex
-                w-full
-                sm:w-auto
-                items-center
-                justify-center
-                rounded-xl
-                bg-indigo-600
-                px-6
-                py-3
-                text-sm
-                font-medium
-                text-white
+                inline-flex w-full sm:w-auto items-center justify-center
+                rounded-xl bg-indigo-600 px-6 py-3
+                text-sm font-medium text-white
                 transition
-                hover:bg-indigo-700
+                hover:bg-indigo-700 hover:shadow-md
               "
               >
-                Start Interview
+                Start Mock Interview →
               </Link>
             </div>
           </div>
