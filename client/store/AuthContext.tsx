@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -12,45 +13,36 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  loading: boolean;
   login: (token: string) => void;
   logout: () => void;
 };
 
 const AuthContext =
-  createContext<AuthContextType | null>(
-    null
-  );
+  createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [user, setUser] = useState<User | null>(
-    () => {
-      if (typeof window === "undefined") {
-        return null;
-      }
+  const [user, setUser] =
+    useState<User | null>(null);
 
-      const token =
-        localStorage.getItem("token");
-
-      return token ? { token } : null;
-    }
-  );
-
-  const loading = false;
+  // Load auth ONLY on client
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
+    
+    const token = localStorage.getItem("token");
+    setUser(token ? { token } : null);
+  }, []);
 
   const login = (token: string) => {
     localStorage.setItem("token", token);
-
     setUser({ token });
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-
     setUser(null);
   };
 
@@ -58,7 +50,6 @@ export const AuthProvider = ({
     <AuthContext.Provider
       value={{
         user,
-        loading,
         login,
         logout,
       }}
@@ -69,8 +60,7 @@ export const AuthProvider = ({
 };
 
 export const useAuth = () => {
-  const context =
-    useContext(AuthContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
     throw new Error(

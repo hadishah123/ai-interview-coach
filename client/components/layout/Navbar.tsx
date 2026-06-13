@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-
 import { useAuth } from "@/store/AuthContext";
 
 export default function Navbar() {

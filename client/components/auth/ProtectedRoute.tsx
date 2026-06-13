@@ -1,8 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/store/AuthContext";
 
 export default function ProtectedRoute({
@@ -10,17 +9,17 @@ export default function ProtectedRoute({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
-
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!user) {
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, router]);
 
-  if (loading) {
+  // stable UI (prevents hydration mismatch)
+  if (!user) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         Loading...
@@ -28,9 +27,5 @@ export default function ProtectedRoute({
     );
   }
 
-  if (!user) {
-    return null;
-  }
-
-  return children;
+  return <>{children}</>;
 }
