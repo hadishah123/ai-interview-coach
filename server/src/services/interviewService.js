@@ -11,11 +11,14 @@ async (
     await axios.post(
       `${process.env.AI_API_URL}/generate-interview`,
       {
-        resume_text: resumeText,
+        resume_text:
+          resumeText,
+
         role,
+
         level,
       }
     );
 
-  return response.data.questions;
+  return response.data;
 };
