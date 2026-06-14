@@ -49,6 +49,7 @@ export default function ResumePage() {
       formData.append("resume", file);
 
       const data = await uploadResume(formData);
+      localStorage.setItem("resumeText", data.extractedText);
 
       console.log("Analysis:", data.analysis);
 
