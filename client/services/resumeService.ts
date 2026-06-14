@@ -1,20 +1,19 @@
-import axios from "axios";
+import api from "@/lib/axios";
 
-export const uploadResume =
-  async (file: File) => {
-    const formData =
-      new FormData();
-
-    formData.append(
-      "resume",
-      file
+export const uploadResume = async (
+  formData: FormData
+) => {
+  const response =
+    await api.post(
+      "/resume/upload",
+      formData,
+      {
+        headers: {
+          "Content-Type":
+            "multipart/form-data",
+        },
+      }
     );
 
-    const response =
-      await axios.post(
-        "http://localhost:5000/api/resume/upload",
-        formData
-      );
-
-    return response.data;
-  };
+  return response.data;
+};

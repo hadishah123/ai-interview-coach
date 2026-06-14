@@ -4,14 +4,14 @@ import pdf from "pdf-parse-fixed";
 
 import axios from "axios";
 
-export const uploadResume = async (
-  req,
-  res
-) => {
+export const uploadResume =
+async (req, res) => {
   try {
+
     if (!req.file) {
       return res.status(400).json({
-        message: "No file uploaded",
+        message:
+          "No file uploaded",
       });
     }
 
@@ -24,43 +24,50 @@ export const uploadResume = async (
       );
 
     const pdfData =
-      await pdf(dataBuffer);
+      await pdf(
+        dataBuffer
+      );
 
     const extractedText =
       pdfData.text;
 
-    console.log(
-      extractedText
-    );
-
     const aiResponse =
       await axios.post(
-        "http://127.0.0.1:8000/analyze-resume",
-
+        `${process.env.AI_API_URL}/analyze-resume`,
         {
           resume_text:
             extractedText,
         }
       );
 
-    const analysis =
-      aiResponse.data.analysis;
+    fs.unlinkSync(
+      filePath
+    );
 
-    res.status(200).json({
+    return res.status(200).json({
       message:
         "Resume analyzed successfully",
 
       extractedText,
 
-      analysis,
+      analysis:
+        aiResponse
+        .data
+        .analysis,
     });
+
   } catch (error) {
+
     console.log(
-      "RESUME ERROR:",
-      error
+      "RESUME ERROR:"
     );
 
-    res.status(500).json({
+    console.log(
+      error?.response?.data ||
+      error.message
+    );
+
+    return res.status(500).json({
       message:
         "Resume upload failed",
     });
