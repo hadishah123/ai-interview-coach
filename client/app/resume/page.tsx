@@ -44,11 +44,15 @@ export default function ResumePage() {
     try {
       setLoading(true);
 
-      const data = await uploadResume(file);
+      const formData = new FormData();
+
+      formData.append("resume", file);
+
+      const data = await uploadResume(formData);
 
       console.log("Analysis:", data.analysis);
+
       setAnalysis(data.analysis);
-      localStorage.setItem("resumeText", data.extractedText);
     } catch (error) {
       console.log(error);
     } finally {
@@ -57,53 +61,48 @@ export default function ResumePage() {
   };
 
   return (
-  <main className="min-h-screen bg-slate-50">
-    <div className="mx-auto max-w-6xl px-6 py-10">
-      <div className="mb-8">
-        <div className="mb-3 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-600">
-          📄 AI Resume Analyzer
+    <main className="min-h-screen bg-slate-50">
+      <div className="mx-auto max-w-6xl px-6 py-10">
+        <div className="mb-8">
+          <div className="mb-3 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-600">
+            📄 AI Resume Analyzer
+          </div>
+
+          <h1 className="text-4xl font-bold text-slate-900">Resume Analysis</h1>
+
+          <p className="mt-2 text-slate-500">
+            Upload your resume and receive AI-powered feedback on skills,
+            formatting, ATS readiness, and improvement opportunities.
+          </p>
         </div>
 
-        <h1 className="text-4xl font-bold text-slate-900">
-          Resume Analysis
-        </h1>
+        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+          <ResumeUpload onUpload={handleUpload} loading={loading} />
+        </div>
 
-        <p className="mt-2 text-slate-500">
-          Upload your resume and receive AI-powered feedback on skills,
-          formatting, ATS readiness, and improvement opportunities.
-        </p>
-      </div>
+        {analysis && (
+          <div className="mt-8 space-y-8">
+            <ResumeScoreCard score={analysis.score} />
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-        <ResumeUpload
-          onUpload={handleUpload}
-          loading={loading}
-        />
-      </div>
+            <ResumeAnalysis data={analysis} />
 
-      {analysis && (
-        <div className="mt-8 space-y-8">
-          <ResumeScoreCard score={analysis.score} />
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-slate-900">
+                    Ready for an Interview?
+                  </h2>
 
-          <ResumeAnalysis data={analysis} />
+                  <p className="mt-2 text-slate-500">
+                    Generate a personalized interview based on your resume and
+                    start practicing immediately.
+                  </p>
+                </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-slate-900">
-                  Ready for an Interview?
-                </h2>
-
-                <p className="mt-2 text-slate-500">
-                  Generate a personalized interview based on your resume
-                  and start practicing immediately.
-                </p>
-              </div>
-
-              <button
-                onClick={handleGenerateInterview}
-                disabled={generating || loading}
-                className="
+                <button
+                  onClick={handleGenerateInterview}
+                  disabled={generating || loading}
+                  className="
                 rounded-2xl
                 bg-indigo-600
                 px-6
@@ -115,16 +114,16 @@ export default function ResumePage() {
                 disabled:cursor-not-allowed
                 disabled:opacity-50
                 "
-              >
-                {generating
-                  ? "Generating Interview..."
-                  : "Generate Interview"}
-              </button>
+                >
+                  {generating
+                    ? "Generating Interview..."
+                    : "Generate Interview"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
-  </main>
-);
+        )}
+      </div>
+    </main>
+  );
 }
