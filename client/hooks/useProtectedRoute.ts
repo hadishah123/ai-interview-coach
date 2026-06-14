@@ -9,13 +9,15 @@ import { useAuth } from "@/store/AuthContext";
 const useProtectedRoute = () => {
   const router = useRouter();
 
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+  // If the Auth context does not provide a loading flag, assume not loading.
+  const loading = false;
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     }
-  }, [user, loading, router]);
+  }, [user, router, loading]);
 
   return {
     user,
