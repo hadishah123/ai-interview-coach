@@ -2,6 +2,7 @@ import { generateInterviewQuestions } from '../services/interviewService.js'
 
 import { createInterviewSession } from '../services/interviewDbService.js'
 import prisma from "../config/prisma.js";
+
 export const getInterviewById =
   async (req, res) => {
     try {
@@ -57,3 +58,37 @@ export const generateInterview = async (req, res) => {
     })
   }
 }
+
+
+export const getHistory =
+async (req, res) => {
+  try {
+
+    const interviews =
+      await prisma.interview.findMany({
+        where: {
+          userId: req.userId,
+        },
+
+        include: {
+          results: true,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+    res.status(200).json(
+      interviews
+    );
+
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message:
+        "Failed to fetch history",
+    });
+  }
+};

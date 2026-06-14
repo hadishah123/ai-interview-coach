@@ -7,7 +7,18 @@ import { useAuth } from "@/store/AuthContext";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
 
-  const { user, logout } = useAuth();
+  const { user, initialized, logout } = useAuth();
+
+  // IMPORTANT: prevent hydration mismatch
+  if (!initialized) {
+    return (
+      <nav className="sticky top-0 z-50 border-b border-white/20 bg-white/70 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <Link href="/">Interview Coach</Link>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     // <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
@@ -49,6 +60,13 @@ export default function Navbar() {
                 className="text-sm font-medium text-slate-600 transition duration-200 hover:text-indigo-600"
               >
                 Interview
+              </Link>
+
+              <Link
+                href="/dashboard/history"
+                className="text-sm font-medium text-slate-600 transition duration-200 hover:text-indigo-600"
+              >
+                History
               </Link>
             </>
           )}
@@ -96,64 +114,73 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="space-y-3 border-t bg-white px-6 py-4 md:hidden">
-          <Link
-            href="/dashboard"
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
             onClick={() => setOpen(false)}
-            className="block text-sm font-medium text-slate-600 hover:text-indigo-600"
-          >
-            Dashboard
-          </Link>
+          />
 
-          {user && (
-            <>
-              <Link
-                href="/resume"
-                onClick={() => setOpen(false)}
-                className="block text-sm font-medium text-slate-600 hover:text-indigo-600"
-              >
-                Resume
-              </Link>
-
-              <Link
-                href="/interview"
-                onClick={() => setOpen(false)}
-                className="block text-sm font-medium text-slate-600 hover:text-indigo-600"
-              >
-                Interview
-              </Link>
-            </>
-          )}
-
-          {!user ? (
-            <>
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="block text-sm font-medium text-slate-600 hover:text-indigo-600"
-              >
-                Login
-              </Link>
-
-              <Link
-                href="/signup"
-                onClick={() => setOpen(false)}
-                className="block rounded-xl bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white"
-              >
-                Sign Up
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={() => {
-                logout();
-                setOpen(false);
-              }}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2 text-left text-sm font-medium text-slate-600"
+          {/* Panel */}
+          <div className="absolute right-4 top-16 w-72 space-y-3 rounded-2xl border border-white/20 bg-white p-5 shadow-2xl backdrop-blur-xl">
+            <Link
+              href="/dashboard"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
             >
-              Logout
-            </button>
-          )}
+              Dashboard
+            </Link>
+
+            {user && (
+              <>
+                <Link
+                  href="/resume"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                >
+                  Resume
+                </Link>
+
+                <Link
+                  href="/interview"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                >
+                  Interview
+                </Link>
+              </>
+            )}
+
+            {!user ? (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/signup"
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-indigo-700"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  logout();
+                  setOpen(false);
+                }}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-50"
+              >
+                Logout
+              </button>
+            )}
+          </div>
         </div>
       )}
     </nav>

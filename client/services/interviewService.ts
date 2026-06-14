@@ -16,3 +16,14 @@ export const generateInterview = async (
 
   return response.data;
 };
+
+export const getHistory =
+async () => {
+
+  const response =
+    await api.get(
+      "/interview/history"
+    );
+
+  return response.data;
+};

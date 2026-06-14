@@ -13,6 +13,7 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
+  initialized: boolean;
   login: (token: string) => void;
   logout: () => void;
 };
@@ -28,12 +29,15 @@ export const AuthProvider = ({
   const [user, setUser] =
     useState<User | null>(null);
 
-  // Load auth ONLY on client
+  const [initialized, setInitialized] =
+    useState(false);
+
+  // 🔥 load auth AFTER mount
   useEffect(() => {
-    /* eslint-disable react-hooks/set-state-in-effect */
-    
     const token = localStorage.getItem("token");
+    /* eslint-disable react-hooks/set-state-in-effect */
     setUser(token ? { token } : null);
+    setInitialized(true);
   }, []);
 
   const login = (token: string) => {
@@ -50,6 +54,7 @@ export const AuthProvider = ({
     <AuthContext.Provider
       value={{
         user,
+        initialized,
         login,
         logout,
       }}

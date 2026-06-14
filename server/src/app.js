@@ -47,5 +47,4 @@ app.use(
   "/api/interview-result",
   interviewResultRoutes
 );
-
 export default app;
