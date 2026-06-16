@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const evaluateInterview =
-async (
+export const evaluateInterview = async (
   questions,
-  answers
+  answers,
+  role,
+  level
 ) => {
 
   const response =
@@ -12,6 +13,8 @@ async (
       {
         questions,
         answers,
+        role,
+        level
       }
     );
 
