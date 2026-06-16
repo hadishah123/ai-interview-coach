@@ -35,6 +35,8 @@ class InterviewRequest(BaseModel):
 class EvaluationRequest(BaseModel):
     questions: list[str]
     answers: list[str]
+    role: str
+    level: str
 
 
 # ==========================
@@ -159,6 +161,12 @@ async def evaluate_interview(data: EvaluationRequest):
 You are a senior technical interviewer.
 
 Evaluate the candidate honestly.
+    
+Target Role:
+{data.role}
+
+Experience Level:
+{data.level}
 
 Interview Q&A:
 
@@ -167,53 +175,60 @@ Interview Q&A:
 Scoring Rubric:
 
 0-20:
-Answers are missing, irrelevant,
-extremely short, or incorrect.
+No answer or completely incorrect.
 
 21-40:
-Weak answers with little technical depth.
-Shows poor understanding of concepts.
+Poor understanding and mostly incorrect.
 
 41-60:
-Average answers.
-Basic understanding but lacks detail,
-examples, and technical accuracy.
+Basic understanding with gaps.
 
-61-80:
-Good answers.
-Shows solid technical knowledge,
-clear communication,
-and reasonable problem-solving ability.
+61-75:
+Good answers with clear explanations.
 
-81-100:
-Excellent answers.
-Detailed explanations,
-real-world examples,
-strong technical reasoning,
-and accurate technical knowledge.
+76-89:
+Strong technical knowledge with examples.
+
+90-100:
+Outstanding answers with depth,
+clear reasoning,
+and practical insight.
 
 Rules:
-- Score MUST be between 0 and 100.
-- Score MUST match feedback.
-- If most answers are one-line responses,
-  score should usually be below 50.
-- If answers are vague,
-  score should usually be below 60.
-- Only award 80+ when answers are detailed,
-  technically correct,
-  and demonstrate strong expertise.
-- Never give 100 unless performance is exceptional.
+- Evaluate relative to role and experience level.
+- Reward correctness more than length.
+- Do NOT punish concise but accurate answers.
+- If answers demonstrate understanding,
+  score should usually be above 65.
+- Give 75+ for technically correct,
+  structured answers.
+- Reserve 90+ for exceptional performance.
 
 Return ONLY valid JSON.
 
-Format:
+Evaluate each answer.
 
-{{
-  "score": 0,
-  "strengths": [],
-  "improvements": [],
-  "technical_feedback": ""
-}}
+For every answer score:
+
+Technical Accuracy (0-10)
+Depth (0-5)
+Communication (0-5)
+
+Compute final score:
+
+Total =
+(sum(answer_scores) /
+ max_possible_score) * 100
+
+Return:
+
+{
+ "score": 0,
+ "strengths": [],
+ "improvements": [],
+ "technical_feedback": "",
+ "per_question_scores":[]
+}
 """
 
         response = client.chat.completions.create(
@@ -293,7 +308,8 @@ Rules:
 - Use only information present in the resume.
 - Do NOT invent skills or weaknesses.
 - Do NOT list a skill as missing if it already exists.
-- Provide realistic job role recommendations.
+- Evaluate resume quality realistically.
+- Recommend suitable job roles.
 
 Return JSON in exactly this format:
 
@@ -321,7 +337,12 @@ Resume:
             ]
         )
 
-        analysis = response.choices[0].message.content
+        analysis = (
+            response
+            .choices[0]
+            .message
+            .content
+        )
 
         analysis = (
             analysis.replace("```json", "")
@@ -338,7 +359,10 @@ Resume:
     except json.JSONDecodeError:
         return {
             "error": "Model returned invalid JSON",
-            "raw_response": analysis if "analysis" in locals() else None
+            "raw_response":
+                analysis
+                if "analysis" in locals()
+                else None
         }
 
     except Exception as e:

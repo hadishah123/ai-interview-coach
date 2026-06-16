@@ -36,14 +36,20 @@ export default function InterviewPage({
     try {
       await saveAnswer(id, allQuestions[currentQuestion], answer);
 
-      const updatedAnswers = [...answers];
-      updatedAnswers[currentQuestion] = answer;
+      setAnswers((prev) => {
+        const copy = [...prev];
 
-      setAnswers(updatedAnswers);
+        copy[currentQuestion] = answer;
+
+        return copy;
+      });
 
       if (currentQuestion < allQuestions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setAnswer(updatedAnswers[currentQuestion + 1] || "");
+        const next = answers[currentQuestion + 1] || "";
+
+        setCurrentQuestion((prev) => prev + 1);
+
+        setAnswer(next);
       }
     } catch (error) {
       console.log(error);
@@ -88,21 +94,49 @@ export default function InterviewPage({
     );
   }
 
-  const handleCompleteInterview = async () => {
-    try {
-      setSubmitting(true);
+  const handleCompleteInterview =
+async () => {
+  try {
 
-      await saveAnswer(id, allQuestions[currentQuestion], answer);
+    setSubmitting(
+      true
+    );
 
-      const result = await completeInterview(id);
+    if (
+      answer.trim()
+    ) {
 
-      router.push(`/interview/result/${result.id}`);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
+      await saveAnswer(
+        id,
+        allQuestions[
+          currentQuestion
+        ],
+        answer
+      );
     }
-  };
+
+    const result =
+      await completeInterview(
+        id
+      );
+
+    router.push(
+      `/interview/result/${result.id}`
+    );
+
+  } catch (error) {
+
+    console.log(
+      error
+    );
+
+  } finally {
+
+    setSubmitting(
+      false
+    );
+  }
+};
 
   return (
     <ProtectedRoute>

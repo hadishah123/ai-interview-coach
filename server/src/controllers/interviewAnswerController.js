@@ -11,22 +11,53 @@ export const saveAnswer = async (
       answer,
     } = req.body;
 
-    const saved =
-      await prisma.interviewAnswer.create({
-        data: {
+    const existing =
+      await prisma.interviewAnswer.findFirst({
+        where: {
           interviewId,
           question,
-          answer,
         },
       });
 
-    res.status(201).json(saved);
-  } catch (error) {
-  console.error("SAVE ANSWER ERROR:");
-  console.error(error);
+    let saved;
 
-  res.status(500).json({
-    message: error.message,
-  });
-}
+    if (existing) {
+      saved =
+        await prisma.interviewAnswer.update({
+          where: {
+            id: existing.id,
+          },
+
+          data: {
+            answer,
+          },
+        });
+    } else {
+      saved =
+        await prisma.interviewAnswer.create({
+          data: {
+            interviewId,
+            question,
+            answer,
+          },
+        });
+    }
+
+    return res
+      .status(200)
+      .json(saved);
+
+  } catch (error) {
+
+    console.error(
+      "SAVE ANSWER ERROR:"
+    );
+
+    console.error(error);
+
+    return res.status(500).json({
+      message:
+        error.message,
+    });
+  }
 };

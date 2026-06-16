@@ -1,162 +1,105 @@
-import { generateInterviewQuestions } from "../services/interviewService.js";
+import { generateInterviewQuestions } from '../services/interviewService.js'
 
-import { createInterviewSession } from "../services/interviewDbService.js";
+import { createInterviewSession } from '../services/interviewDbService.js'
 
-import prisma from "../config/prisma.js";
+import prisma from '../config/prisma.js'
 
-export const getInterviewById = async (
-  req,
-  res
-) => {
+export const getInterviewById = async (req, res) => {
   try {
-    const interview =
-      await prisma.interview.findUnique({
-        where: {
-          id: req.params.id,
-        },
-      });
+    const interview = await prisma.interview.findUnique({
+      where: {
+        id: req.params.id
+      }
+    })
 
     if (!interview) {
       return res.status(404).json({
-        message:
-          "Interview not found",
-      });
+        message: 'Interview not found'
+      })
     }
 
-    return res
-      .status(200)
-      .json(interview);
-
+    return res.status(200).json(interview)
   } catch (error) {
-    console.log(error);
+    console.log(error)
 
     return res.status(500).json({
-      message:
-        "Server error",
-    });
+      message: 'Server error'
+    })
   }
-};
+}
 
-export const generateInterview =
-async (
-  req,
-  res
-) => {
+export const generateInterview = async (req, res) => {
   try {
+    const { resumeText, role, level } = req.body
 
-    const {
-      resumeText,
-      role,
-      level,
-    } = req.body;
+    const aiResponse = await generateInterviewQuestions(resumeText, role, level)
 
-    const aiResponse =
-      await generateInterviewQuestions(
-        resumeText,
-        role,
-        level
-      );
-
-    console.log(
-      "AI RESPONSE:",
-      aiResponse
-    );
+    console.log('AI RESPONSE:', aiResponse)
 
     const questions =
       aiResponse?.questions ||
       aiResponse?.interview_questions ||
       aiResponse?.data ||
-      [];
+      aiResponse ||
+      {}
 
-    if (
-      !questions ||
-      questions.length === 0
-    ) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "No interview questions generated",
-        });
+    const totalQuestions = Object.values(questions).flat().length
+
+    if (totalQuestions === 0) {
+      return res.status(400).json({
+        message: 'No interview questions generated'
+      })
     }
+    console.log('QUESTIONS:', questions)
 
-    console.log(
-      "QUESTIONS:",
+    const interview = await createInterviewSession({
+      userId: req.userId,
+
+      role,
+
+      level,
+
       questions
-    );
-
-    const interview =
-      await createInterviewSession({
-        userId:
-          req.userId,
-
-        role,
-
-        level,
-
-        questions,
-      });
+    })
 
     return res.status(200).json({
-      interviewId:
-        interview.id,
+      interviewId: interview.id,
 
-      questions,
-    });
-
+      questions
+    })
   } catch (error) {
+    console.log('INTERVIEW ERROR:')
 
-    console.log(
-      "INTERVIEW ERROR:"
-    );
-
-    console.log(
-      error?.response?.data ||
-      error.message
-    );
+    console.log(error?.response?.data || error.message)
 
     return res.status(500).json({
-      message:
-        "Interview generation failed",
-    });
+      message: 'Interview generation failed'
+    })
   }
-};
+}
 
-export const getHistory =
-async (
-  req,
-  res
-) => {
+export const getHistory = async (req, res) => {
   try {
+    const interviews = await prisma.interview.findMany({
+      where: {
+        userId: req.userId
+      },
 
-    const interviews =
-      await prisma.interview.findMany({
-        where: {
-          userId:
-            req.userId,
-        },
+      include: {
+        results: true
+      },
 
-        include: {
-          results: true,
-        },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
 
-        orderBy: {
-          createdAt:
-            "desc",
-        },
-      });
-
-    return res
-      .status(200)
-      .json(interviews);
-
+    return res.status(200).json(interviews)
   } catch (error) {
-
-    console.log(error);
+    console.log(error)
 
     return res.status(500).json({
-      message:
-        "Failed to fetch history",
-    });
+      message: 'Failed to fetch history'
+    })
   }
-};
+}
