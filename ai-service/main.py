@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
@@ -94,7 +92,10 @@ Format:
                     "content": prompt,
                 }
             ],
-            temperature=0.7
+            temperature=0.7,
+            response_format={
+                "type": "json_object"
+                },
         )
 
         result = response.choices[0].message.content
@@ -142,8 +143,8 @@ async def evaluate_interview(data: EvaluationRequest):
             if a and a.strip():
 
                 qa_pairs.append({
-                    "question": q[:150],
-                    "answer": a[:500]
+                    "question": q[:110],
+                    "answer": a[:2500]
                 })
 
         if len(qa_pairs) == 0:
@@ -222,13 +223,13 @@ Total =
 
 Return:
 
-{
+{{
  "score": 0,
  "strengths": [],
  "improvements": [],
  "technical_feedback": "",
  "per_question_scores":[]
-}
+}}
 """
 
         response = client.chat.completions.create(
@@ -240,6 +241,9 @@ Return:
                 }
             ],
             temperature=0.2,
+            response_format={
+                "type": "json_object"
+                },
         )
 
         result = (
@@ -334,7 +338,10 @@ Resume:
                     "role": "user",
                     "content": prompt
                 }
-            ]
+            ],
+            response_format={
+                "type": "json_object"
+                },
         )
 
         analysis = (

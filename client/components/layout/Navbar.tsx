@@ -148,6 +148,14 @@ export default function Navbar() {
                 >
                   Interview
                 </Link>
+
+                <Link
+                  href="/dashboard/history"
+                  onClick={() => setOpen(false)}    
+                  className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                >
+                  History
+                </Link>
               </>
             )}
 
