@@ -9,11 +9,16 @@ import { completeInterview } from "@/services/interviewResultService";
 import { saveAnswer } from "@/services/interviewAnswerService";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
+type Question = {
+  question: string;
+  topic: string;
+};
+
 type Interview = {
   questions: {
-    technical?: string[];
-    projects?: string[];
-    behavioral?: string[];
+    technical?: Question[];
+    projects?: Question[];
+    behavioral?: Question[];
   };
 };
 
@@ -34,7 +39,7 @@ export default function InterviewPage({
 
   const handleNextQuestion = async () => {
     try {
-      await saveAnswer(id, allQuestions[currentQuestion], answer);
+      await saveAnswer(id, allQuestions[currentQuestion].question, answer);
 
       setAnswers((prev) => {
         const copy = [...prev];
@@ -94,49 +99,23 @@ export default function InterviewPage({
     );
   }
 
-  const handleCompleteInterview =
-async () => {
-  try {
+  const handleCompleteInterview = async () => {
+    try {
+      setSubmitting(true);
 
-    setSubmitting(
-      true
-    );
+      if (answer.trim()) {
+        await saveAnswer(id, allQuestions[currentQuestion].question, answer);
+      }
 
-    if (
-      answer.trim()
-    ) {
+      const result = await completeInterview(id);
 
-      await saveAnswer(
-        id,
-        allQuestions[
-          currentQuestion
-        ],
-        answer
-      );
+      router.push(`/interview/result/${result.id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmitting(false);
     }
-
-    const result =
-      await completeInterview(
-        id
-      );
-
-    router.push(
-      `/interview/result/${result.id}`
-    );
-
-  } catch (error) {
-
-    console.log(
-      error
-    );
-
-  } finally {
-
-    setSubmitting(
-      false
-    );
-  }
-};
+  };
 
   return (
     <ProtectedRoute>
@@ -188,7 +167,7 @@ async () => {
             {/* Question */}
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
               <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 leading-relaxed">
-                {allQuestions[currentQuestion]}
+                {allQuestions[currentQuestion].question}
               </h2>
             </div>
 
